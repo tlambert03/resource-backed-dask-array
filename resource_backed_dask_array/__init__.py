@@ -52,8 +52,10 @@ class ResourceBackedDaskArray(da.Array):
         arr = super().__new__(
             cls, dask, name, chunks, dtype=dtype, meta=meta, shape=shape
         )
-        assert _context is not None
-        arr._context = _context
+        assert (
+            _context is not None
+        ), "Must provide _context when creating a ResourceBackedDaskArray"
+        setattr(arr, "_context", _context)
         return arr
 
     @classmethod
