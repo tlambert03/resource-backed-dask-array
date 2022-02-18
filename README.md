@@ -95,8 +95,8 @@ This library attempts to provide a solution to the above problem with a
 an underlying resource whenever [`.compute()`](https://docs.dask.org/en/stable/generated/dask.array.Array.compute.html#dask.array.Array.compute) is called – and does so only once for all chunks in a single compute task graph.
 
 ```python
->>> from resource_backed_dask_array import ResourceBackedDaskArray
->>> safe_dsk_ary = ResourceBackedDaskArray.from_array(dsk_ary, fr)
+>>> from resource_backed_dask_array import resource_backed_dask_array
+>>> safe_dsk_ary = resource_backed_dask_array(dsk_ary, fr)
 >>> safe_dsk_ary.compute().shape
 (4, 4, 4)
 

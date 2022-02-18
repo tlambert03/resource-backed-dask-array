@@ -13,7 +13,7 @@ try:
 except ImportError:
     __version__ = "unknown"
 __author__ = "Talley Lambert"
-
+__all__ = ["resource_backed_dask_array", "ResourceBackedDaskArray"]
 
 if TYPE_CHECKING:
     from typing_extensions import Protocol
@@ -34,6 +34,29 @@ def _copy_doc(method):
 
     method.__doc__ = doc
     return method
+
+
+def resource_backed_dask_array(
+    arr: da.Array, ctx: CheckableContext
+) -> ResourceBackedDaskArray:
+    """Create an ResourceBackedDaskArray with a checkable context.
+
+    Parameters
+    ----------
+    arr : da.Array
+        A dask array
+    ctx : CheckableContext
+        a context manager that:
+            1) opens the underlying resource on `__enter__`
+            2) closes the underlying resource on `__exit__`
+            3) implements a `.closed` attribute that reports the open-state of
+               the resource.
+
+    Returns
+    -------
+    ResourceBackedDaskArray
+    """
+    return ResourceBackedDaskArray.from_array(arr, ctx)
 
 
 class ResourceBackedDaskArray(da.Array):
@@ -60,12 +83,13 @@ class ResourceBackedDaskArray(da.Array):
 
     @classmethod
     def from_array(cls, arr, ctx: CheckableContext) -> ResourceBackedDaskArray:
-        """Create an OpeningDaskArray with a checkable context.
+        """Create a ResourceBackedDaskArray with a checkable context.
 
-        `ctx` must be a context manager that opens/closes some underlying resource (like
-        a file), and has a `closed` attribute that returns the current state of the
-        resource.  This subclass will take care of opening and closing the resource on
-        compute.
+        `ctx` must be a context manager that:
+            1) opens the underlying resource on `__enter__`
+            2) closes the underlying resource on `__exit__`
+            3) implements a `.closed` attribute that reports the open-state of the
+               resource.
         """
         if isinstance(arr, ResourceBackedDaskArray):
             return arr

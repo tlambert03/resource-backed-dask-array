@@ -6,10 +6,13 @@ import dask.array as da
 import numpy as np
 import pytest
 
-from resource_backed_dask_array import ResourceBackedDaskArray
+from resource_backed_dask_array import (
+    ResourceBackedDaskArray,
+    resource_backed_dask_array,
+)
 
 
-# a *re-entrant* file context manager
+# a *reusable* file context manager
 class FileContext:
     FILE_OPEN = False
     OPEN_COUNT = 0
@@ -127,7 +130,7 @@ def test_pickle():
     dsk = da.random.random((4, 4))
     ctx = FileContext()
     ctx.FILE_OPEN = True
-    rdba = ResourceBackedDaskArray.from_array(dsk, ctx)
+    rdba = resource_backed_dask_array(dsk, ctx)
     assert not rdba._context.closed
     pda = pickle.dumps(dsk)
     prbda = pickle.dumps(rdba)
