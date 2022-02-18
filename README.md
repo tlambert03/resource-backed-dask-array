@@ -104,15 +104,16 @@ an underlying resource whenever [`.compute()`](https://docs.dask.org/en/stable/g
 True
 ```
 
-The second argument passed to `from_array` must be a [resuable context manager](https://docs.python.org/3/library/contextlib.html#reusable-context-managers)
-that additionally provides a `closed` attribute (like [io.IOBase](https://docs.python.org/3/library/io.html#io.IOBase.closed)).  In other words,
-it must implement the following protocol:
+The second argument passed to `resource_backed_dask_array` must be a
+[resuable context manager](https://docs.python.org/3/library/contextlib.html#reusable-context-managers)
+that additionally provides a `closed` attribute (like [io.IOBase](https://docs.python.org/3/library/io.html#io.IOBase.closed)).
+In other words, it must implement the following protocol:
 
 1. it must have an [`__enter__` method](https://docs.python.org/3/reference/datamodel.html#object.__enter__) that opens the underlying resource
 2. it must have an [`__exit__` method](https://docs.python.org/3/reference/datamodel.html#object.__exit__) that closes the resource and optionally handles exceptions
 3. it must have a `closed` attribute that reports whether or not the resource is closed.
 
-In the example above, the `FileReader` class itself implemented this protocol, and so was suitable as the second argument to `ResourceBackedDaskArray.from_array` above.
+In the example above, the `FileReader` class itself implemented this protocol, and so was suitable as the second argument to `resource_backed_dask_array` above.
 
 ## Important Caveats
 
