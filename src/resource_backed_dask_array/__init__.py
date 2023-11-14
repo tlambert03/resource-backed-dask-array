@@ -1,12 +1,10 @@
-"""experimental Dask array that opens/closes a resource when computing"""
+"""experimental Dask array that opens/closes a resource when computing."""
 from __future__ import annotations
 
 from contextlib import nullcontext
-from types import MethodType
-from typing import TYPE_CHECKING, Any, ContextManager, Optional
+from typing import TYPE_CHECKING, Any, ContextManager
 
 import dask.array as da
-import numpy as np
 
 try:
     from ._version import version as __version__
@@ -16,12 +14,15 @@ __author__ = "Talley Lambert"
 __all__ = ["resource_backed_dask_array", "ResourceBackedDaskArray"]
 
 if TYPE_CHECKING:
+    from types import MethodType
+
+    import numpy as np
     from typing_extensions import Protocol
 
     # fmt: off
     class CheckableContext(ContextManager, Protocol):
         @property
-        def closed(self) -> bool: ...  # noqa: E704
+        def closed(self) -> bool: ...
     # fmt: on
 
 
@@ -70,7 +71,7 @@ class ResourceBackedDaskArray(da.Array):
         dtype=None,
         meta=None,
         shape=None,
-        _context: Optional[CheckableContext] = None,
+        _context: CheckableContext | None = None,
     ):
         arr = super().__new__(
             cls, dask, name, chunks, dtype=dtype, meta=meta, shape=shape
@@ -78,7 +79,7 @@ class ResourceBackedDaskArray(da.Array):
         assert (
             _context is not None
         ), "Must provide _context when creating a ResourceBackedDaskArray"
-        setattr(arr, "_context", _context)
+        arr._context = _context
         return arr
 
     @classmethod
@@ -110,7 +111,8 @@ class ResourceBackedDaskArray(da.Array):
         """
         Notes
         -----
-        This subclass of da.Array will re-open the underlying file before compute."""
+        This subclass of da.Array will re-open the underlying file before compute.
+        """
         _ctx = self._context if self._context.closed else nullcontext()
         with _ctx:
             return super().compute(**kwargs)
@@ -165,7 +167,8 @@ class ResourceBackedDaskArray(da.Array):
 
 class _ArrayMethodProxy:
     """Wraps method on a dask array and returns a OpeningDaskArray if the result of the
-    method is a dask array.  see details in OpeningDaskArray docstring."""
+    method is a dask array.  see details in OpeningDaskArray docstring.
+    """
 
     def __init__(self, method: MethodType, file_ctx: CheckableContext) -> None:
         self.method = method
