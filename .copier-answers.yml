@@ -1,0 +1,9 @@
+# Do not edit - changes here will be overwritten by Copier
+_commit: v1
+_src_path: gh:tlambert03/pyrepo
+mode: tooling
+module_name: resource_backed_dask_array
+project_name: resource-backed-dask-array
+project_short_description: experimental Dask array that opens/closes a resource when
+    computing
+
