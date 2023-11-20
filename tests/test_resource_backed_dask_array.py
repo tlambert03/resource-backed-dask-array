@@ -18,7 +18,7 @@ class FileContext:
     OPEN_COUNT = 0
 
     @property
-    def closed(self):
+    def closed(self) -> bool:
         return not self.FILE_OPEN
 
     def __enter__(self) -> "FileContext":
@@ -126,7 +126,7 @@ def test_wrapper_repr(dask_arr: da.Array, wrapper: ResourceBackedDaskArray) -> N
     assert repr(dask_arr.mean) == repr(wrapper.mean)
 
 
-def test_pickle():
+def test_pickle() -> None:
     dsk = da.random.random((4, 4))
     ctx = FileContext()
     ctx.FILE_OPEN = True
