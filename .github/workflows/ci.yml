@@ -29,8 +29,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        platform: [ubuntu-latest]
+        include:
+          - python-version: "3.11"
+            platform: macos-latest
+          - python-version: "3.10"
+            platform: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -98,4 +103,4 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
-          files: './dist/*'
+          files: "./dist/*"
