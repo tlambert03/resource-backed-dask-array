@@ -18,7 +18,7 @@ class FileContext:
     OPEN_COUNT = 0
 
     @property
-    def closed(self):
+    def closed(self) -> bool:
         return not self.FILE_OPEN
 
     def __enter__(self) -> "FileContext":
@@ -38,7 +38,7 @@ def dask_arr() -> da.Array:
 
     def get_chunk(block_id: Tuple[int, ...]) -> np.ndarray:
         if not ctx.FILE_OPEN:
-            warnings.warn("You didn't open the file!")
+            warnings.warn("You didn't open the file!", stacklevel=2)
         nonlocal called
 
         if not isinstance(block_id, np.ndarray):
@@ -126,7 +126,7 @@ def test_wrapper_repr(dask_arr: da.Array, wrapper: ResourceBackedDaskArray) -> N
     assert repr(dask_arr.mean) == repr(wrapper.mean)
 
 
-def test_pickle():
+def test_pickle() -> None:
     dsk = da.random.random((4, 4))
     ctx = FileContext()
     ctx.FILE_OPEN = True
