@@ -6,8 +6,9 @@ except ImportError:
 
 try:
     __version__ = version("resource-backed-dask-array")
-except PackageNotFoundError:
+except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
+
 __author__ = "Talley Lambert"
 __all__ = ["resource_backed_dask_array", "ResourceBackedDaskArray"]
 

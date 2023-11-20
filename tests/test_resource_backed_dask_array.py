@@ -38,7 +38,7 @@ def dask_arr() -> da.Array:
 
     def get_chunk(block_id: Tuple[int, ...]) -> np.ndarray:
         if not ctx.FILE_OPEN:
-            warnings.warn("You didn't open the file!")
+            warnings.warn("You didn't open the file!", stacklevel=2)
         nonlocal called
 
         if not isinstance(block_id, np.ndarray):
