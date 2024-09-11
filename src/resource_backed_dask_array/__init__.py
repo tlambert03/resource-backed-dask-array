@@ -1,4 +1,5 @@
 """experimental Dask array that opens/closes a resource when computing."""
+
 try:
     from importlib.metadata import PackageNotFoundError, version
 except ImportError:
